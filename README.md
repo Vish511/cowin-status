@@ -7,6 +7,10 @@ A simple node utility to check the vaccine availability status in COWIN website 
 * A desktop alert will be generated once there is a slot available.
 * Clicking on the alert will directly take you to the COWIN website from where you can book a slot by logging in.
 
+# Instructions
+* Change the parameters *minimum age limit*, *preferred vaccine*, *number of doses available* and *pincode* in **constants.js** file
+* Install the required packages using `npm install`
+* Run `node main.js` to get the utility started
 
 
 # Note
