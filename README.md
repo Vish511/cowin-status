@@ -3,7 +3,7 @@ A simple node utility to check the vaccine availability status in COWIN website 
 
 
 # Functions
- Markup : * It has the ability to search based on user preference such as Min Age Limit, Preferred Vaccine, Number of doses available and pincode.
+* It has the ability to search based on user preference such as Min Age Limit, Preferred Vaccine, Number of doses available and pincode.
 * A desktop alert will be generated once there is a slot available.
 * Clicking on the alert will directly take you to the COWIN website from where you can book a slot by logging in.
 
