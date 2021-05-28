@@ -31,28 +31,47 @@ const constants = require('./constants');
 
 
 function checkAvailableCenters(response) {
+    let vaccineAvailable = false
     for(let i = 0; i < response.centers.length; i++) {
         for(let j = 0; j < response.centers[i].sessions.length;j++) {
-            if (isVaccineAvailableForAgeLimit(response.centers[i].sessions[j]) && isPreferredVaccineAvailable(response.centers[i].sessions[j]) && isMinDoseAvailable(response.centers[i].sessions[j])) {
+            if (isVaccineAvailableForAgeLimit(response.centers[i].sessions[j]) && isPreferredVaccineAvailable(response.centers[i].sessions[j]) && isMinDoseAvailable(response.centers[i].sessions[j]) && isDoseAvailable(response.centers[i].sessions[j])) {
                 notifier.notify({
                     title: `${response.centers[i].sessions[j].date} Vaccine slots available, Book now - `,
-                    message: `${response.centers[i].sessions[j].available_capacity_dose1} Doses available on ${response.centers[i].sessions[j].date} at ${response.centers[i].name}, ${response.centers[i].address} , ${response.centers[i].block_name}`,
+                    message: `${response.centers[i].sessions[j][`available_capacity_dose${constants.DOSE}`]} Doses available on ${response.centers[i].sessions[j].date} at ${response.centers[i].name}, ${response.centers[i].address} , ${response.centers[i].block_name}`,
                     subtitle: `Slots - ${response.centers[i].sessions[j].slots}`,
                     sound:true,
                     open:'https://selfregistration.cowin.gov.in/'
                 });
+                vaccineAvailable = true
                 console.log(`${response.centers[i].sessions[j].date} Vaccine slot available, book fast - `.green.bold)
-                console.log(`${response.centers[i].sessions[j].available_capacity_dose1} Doses available on ${response.centers[i].sessions[j].date} at ${response.centers[i].name}, ${response.centers[i].address} , ${response.centers[i].block_name}`.yellow.bold)
+                console.log(`${response.centers[i].sessions[j][`available_capacity_dose${constants.DOSE}`]} Doses available on ${response.centers[i].sessions[j].date} at ${response.centers[i].name}, ${response.centers[i].address} , ${response.centers[i].block_name}`.yellow.bold)
                 console.log(`Slots - ${response.centers[i].sessions[j].slots}`.blue.bold)
             }
         }
     }
-    console.log(`${new Date()} No doses found!`.red)
+    if(!vaccineAvailable) {
+        console.log(`${new Date()} No doses found!`.red)
+    }
     rechecker.reCheckAvailability()
 }
 
+
+function isDoseAvailable(vaccineDetails) {
+    if (constants.DOSE == 1) {
+       if(vaccineDetails.available_capacity_dose1 >= constants.AVAILABLE_CAPACITY) {
+        return true
+       }
+    }
+    if (constants.DOSE == 2) {
+        if(vaccineDetails.available_capacity_dose2 >= constants.AVAILABLE_CAPACITY) {
+            return true
+        }
+     }
+    return false
+}
+
 function isVaccineAvailableForAgeLimit(vaccineDetails) {
-    if(vaccineDetails.available_capacity >= constants.AVAILABLE_CAPACITY) {
+    if(vaccineDetails.min_age_limit == constants.MIN_AGE_LIMIT) {
         return true
     }
     return false
@@ -62,7 +81,7 @@ function isPreferredVaccineAvailable(vaccineDetails) {
     if (constants.PREFFERED_VACCINE == 'ANY') {
         return true
     }
-    if(vaccineDetails.vaccine == constants.PREFFERED_VACCINE) {
+    if(vaccineDetails.vaccine == constants.PREFERRED_VACCINE) {
         return true
     }
     return false
@@ -74,4 +93,5 @@ function isMinDoseAvailable(vaccineDetails) {
   }
   return false
 }
+
 
